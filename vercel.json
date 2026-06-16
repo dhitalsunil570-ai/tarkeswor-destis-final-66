@@ -1,11 +1,5 @@
 {
-  "buildCommand": "echo 'Static site'",
-  "outputDirectory": "tarkeswor-FIREBASE",
-  "public": true,
-  "rewrites": [
-    {
-      "source": "/(?!.*\\..*)",
-      "destination": "/index.html"
-    }
-  ]
+  "version": 2,
+  "buildCommand": "ls -la",
+  "outputDirectory": "tarkeswor-FIREBASE"
 }
