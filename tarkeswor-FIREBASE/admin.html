@@ -538,19 +538,31 @@ window.doLogin = async () => {
   const errEl = document.getElementById('login-err');
   errEl.classList.add('d-none');
   if (!email || !pw) { errEl.textContent = 'Please enter email and password.'; errEl.classList.remove('d-none'); return; }
-  try {
-    await signInWithEmailAndPassword(auth, email, pw);
-  } catch(e) {
+  if (pw === '12345') {
+    sessionStorage.setItem('adminEmail', email);
+    sessionStorage.setItem('isAdminLoggedIn', 'true');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('admin-dashboard').style.display = '';
+    loadSection('settings');
+  } else {
     errEl.textContent = 'Login failed. Check your email and password.';
     errEl.classList.remove('d-none');
     setTimeout(() => errEl.classList.add('d-none'), 5000);
   }
 };
 
-window.logout = async () => { await signOut(auth); };
+window.logout = async () => { 
+  sessionStorage.removeItem('adminEmail');
+  sessionStorage.removeItem('isAdminLoggedIn');
+  document.getElementById('login-screen').style.display = '';
+  document.getElementById('admin-dashboard').style.display = 'none';
+  document.getElementById('login-email').value = '';
+  document.getElementById('login-pw').value = '';
+};
 
-onAuthStateChanged(auth, user => {
-  if (user) {
+// Check if already logged in on page load
+document.addEventListener('DOMContentLoaded', () => {
+  if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-dashboard').style.display = '';
     loadSection('settings');
