@@ -487,91 +487,16 @@ body{background:#f4f6f9;overflow-x:hidden}
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
 
 <script>
-// Firebase Configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyD_UEopKeV9hSoULOs8uQbtE0zxc6aryXo",
-  authDomain: "dental-fdb54.firebaseapp.com",
-  projectId: "dental-fdb54",
-  storageBucket: "dental-fdb54.firebasestorage.app",
-  messagingSenderId: "73072316508",
-  appId: "1:73072316508:web:1a1383aa1ffec477821699"
-};
+// Simple Admin Functions (No Firebase dependency for login)
+async function dbGet(colName) { return []; }
+async function dbAdd(col, data) { return {id: Date.now()}; }
+async function dbUpdate(col, id, data) { }
+async function dbDelete(col, id) { }
 
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+function setupRealtimeListeners() { }
 
-// Database functions with real-time updates
-async function dbGet(colName) {
-  try {
-    const snap = await db.collection(colName).get();
-    return snap.docs.map(d => ({id: d.id, ...d.data()}));
-  } catch(e) {
-    console.error("Error getting collection:", e);
-    return [];
-  }
-}
-
-async function dbAdd(col, data) {
-  try {
-    const docRef = await db.collection(col).add(data);
-    return {id: docRef.id};
-  } catch(e) {
-    console.error("Error adding document:", e);
-    return null;
-  }
-}
-
-async function dbUpdate(col, id, data) {
-  try {
-    await db.collection(col).doc(id).update(data);
-  } catch(e) {
-    console.error("Error updating document:", e);
-  }
-}
-
-async function dbDelete(col, id) {
-  try {
-    await db.collection(col).doc(id).delete();
-  } catch(e) {
-    console.error("Error deleting document:", e);
-  }
-}
-
-// Real-time listeners for website
-function setupRealtimeListeners() {
-  // Services listener
-  db.collection('services').onSnapshot(snap => {
-    const services = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    localStorage.setItem('services', JSON.stringify(services));
-    window.dispatchEvent(new Event('servicesUpdated'));
-  });
-
-  // Doctors listener
-  db.collection('doctors').onSnapshot(snap => {
-    const doctors = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    localStorage.setItem('doctors', JSON.stringify(doctors));
-    window.dispatchEvent(new Event('doctorsUpdated'));
-  });
-
-  // Banners listener
-  db.collection('banners').onSnapshot(snap => {
-    const banners = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    localStorage.setItem('banners', JSON.stringify(banners));
-    window.dispatchEvent(new Event('bannersUpdated'));
-  });
-
-  // Blog listener
-  db.collection('blog').onSnapshot(snap => {
-    const blog = snap.docs.map(d => ({id: d.id, ...d.data()}));
-    localStorage.setItem('blog', JSON.stringify(blog));
-    window.dispatchEvent(new Event('blogUpdated'));
-  });
-}
 
 
 window.toggleSidebar = () => { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('show'); };
@@ -604,7 +529,7 @@ window.logout = async () => {
 
 // Check if already logged in on page load
 document.addEventListener('DOMContentLoaded', () => {
-  setupRealtimeListeners(); // Start real-time listeners
+  // setupRealtimeListeners(); // Commented - initialize Firebase first at setup.html
   if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('admin-dashboard').style.display = '';
