@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Firebase Setup</title>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+</head>
+<body>
+  <h1>Setting up Firebase Database...</h1>
+  <div id="status"></div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_UEopKeV9hSoULOs8uQbtE0zxc6aryXo",
+      authDomain: "dental-fdb54.firebaseapp.com",
+      projectId: "dental-fdb54",
+      storageBucket: "dental-fdb54.firebasestorage.app",
+      messagingSenderId: "73072316508",
+      appId: "1:73072316508:web:1a1383aa1ffec477821699"
+    };
+
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function setupDatabase() {
+      const status = document.getElementById('status');
+      try {
+        status.innerHTML += '<p>✓ Firebase initialized</p>';
+
+        // Add Settings
+        await db.collection('settings').doc('main').set({
+          seo_title: "Tarkeswor Dentist Pvt. Ltd.",
+          seo_description: "Best dental clinic in Kathmandu",
+          logo_text: "Tarkeswor Dentist",
+          site_name: "Tarkeswor Dentist Pvt. Ltd.",
+          phone: "+977-1-4234567",
+          email: "info@tarkeswor.com",
+          address: "Kathmandu, Nepal",
+          location_url: "https://maps.google.com",
+          facebook: "https://facebook.com/tarkeswor",
+          twitter: "https://twitter.com/tarkeswor",
+          instagram: "https://instagram.com/tarkeswor",
+          linkedin: "https://linkedin.com/company/tarkeswor"
+        });
+        status.innerHTML += '<p>✓ Settings added</p>';
+
+        // Add Services
+        const services = [
+          { title: "General Dentistry", description: "Routine checkups and cleanings", image: "img/service-1.jpg", sortOrder: 1 },
+          { title: "Cosmetic Dentistry", description: "Whitening and veneers", image: "img/service-2.jpg", sortOrder: 2 },
+          { title: "Orthodontics", description: "Braces and aligners", image: "img/service-3.jpg", sortOrder: 3 }
+        ];
+        for (const s of services) {
+          await db.collection('services').add(s);
+        }
+        status.innerHTML += '<p>✓ Services added (3)</p>';
+
+        status.innerHTML += '<p style="color:green; font-weight:bold;">✓ Database setup complete!</p>';
+        status.innerHTML += '<p><a href="admin.html">Go to Admin Panel</a></p>';
+      } catch(err) {
+        status.innerHTML += '<p style="color:red;">✗ Error: ' + err.message + '</p>';
+      }
+    }
+
+    setupDatabase();
+  </script>
+</body>
+</html>
