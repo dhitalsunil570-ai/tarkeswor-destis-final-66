@@ -1,0 +1,9 @@
+{
+  "name": "Tarkeswor Dental",
+  "version": "1.0.0",
+  "description": "Tarkeswor Dental Clinic Website",
+  "scripts": {
+    "build": "echo 'Static site - no build needed'",
+    "start": "python3 -m http.server 3000"
+  }
+}
